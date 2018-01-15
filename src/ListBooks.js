@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types'
 
-class ListBooks extends Component {
+class ListBooks extends React.Component{
 
     static propTypes = {
         books: PropTypes.array.isRequired,
@@ -30,6 +30,7 @@ class ListBooks extends Component {
                                                     value={book.shelf}
                                                     onChange={(event) =>
                                                         onChangeShelf(book, (event.target.value !== "none") ? event.target.value : false)}>
+                                                    <option value="none" disabled>Move to</option>
                                                     <option value="currentlyReading">Currently Reading</option>
                                                     <option value="wantToRead">Want to Read</option>
                                                     <option value="read">Read</option>

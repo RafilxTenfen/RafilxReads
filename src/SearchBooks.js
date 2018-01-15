@@ -1,9 +1,11 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import ListBooks from './ListBooks'
+import * as BooksAPI from './BooksAPI'
 import { Link } from 'react-router-dom'
 import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
+import {DebounceInput} from 'react-debounce-input'
 
 class SearchBooks extends Component {
     static propTypes = {
@@ -11,30 +13,38 @@ class SearchBooks extends Component {
     }
 
     state = {
-        query: ''
+        query: '',
+        books: []
+    }
+
+    componentDidMount() {
+        this.setState({books: this.props.books})
+    }
+
+    changeQuery = (query) => {
+        this.setState({query : query})
     }
 
     updateQuery = (query) => {
-        this.setState({ query: query.trim() })
-    }
-
-    clearQuery = () => {
-        this.setState({query: ''})
+        const match = new RegExp(escapeRegExp(query), 'i')
+        if(query){
+            this.setState({query : query})
+            BooksAPI.search(this.state.query).then((books) => {
+                var isArray = require('isarray')
+                if(isArray(books)){
+                    books =  books.filter((book) => match.test(book.title)).sort(sortBy('tittle'))
+                    this.setState({books: books})
+                }
+            })
+        } else {
+            this.setState({books: this.props.books})
+            this.setState({query : ''})
+        }
     }
 
     render () {
-        const { books, onChangeShelf } = this.props
-        const { query } = this.state
-
-        let showingBooks
-
-        if(query) {
-            const match = new RegExp(escapeRegExp(query), 'i')
-            showingBooks = books.filter((book) => match.test(book.title))
-        } else {
-            showingBooks = books
-        }
-        showingBooks.sort(sortBy('title'))
+        const { onChangeShelf } = this.props
+        const { query, books } = this.state
 
         return (
             <div className="search-books">
@@ -44,22 +54,21 @@ class SearchBooks extends Component {
                         className="close-search"
                         >Close</Link>
                     <div className="search-books-input-wrapper">
-                        <input
-                            type="text"
-                            placeholder="Search by title"
-                            value={query}
-                            onChange={(event) => this.updateQuery(event.target.value)}
-                        />
+                        <div>
+                            <DebounceInput
+                                minLength={2}
+                                placeholder="Search by title"
+                                type="text"
+                                debounceTimeout={300}
+                                onKeyPress={(event) => this.updateQuery(event.target.value)}
+                                onChange={(event) => this.changeQuery(event.target.value)}
+                                value={query}
+                            />
+                        </div>
                     </div>
                 </div>
                 <div className="search-books-results">
-                    {showingBooks.length !== books.length && (
-                        <div className='showing-books'>
-                            <span>Now showing {showingBooks.length} of {books.length} total</span>
-                            <button type='text' onClick={this.clearQuery}>Show all</button>
-                        </div>
-                    )}
-                    <ListBooks books={showingBooks} onChangeShelf={onChangeShelf}/>
+                    <ListBooks books={books} onChangeShelf={onChangeShelf}/>
                 </div>
             </div>
         )
