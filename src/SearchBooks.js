@@ -43,7 +43,6 @@ class SearchBooks extends Component {
                     books = mergeJSON.merge(filteredBooks, books)
                     books = books.filter((book) => match.test(book.title)).sort(sortBy('tittle'))
                     this.setState({books: books})
-                    console.log(books)
                 }
             })
         } else {
