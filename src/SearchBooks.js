@@ -40,6 +40,10 @@ class SearchBooks extends Component {
                     let filteredBooks = this.props.books.filter((book) => match.test(book.title))
                     let idFilteredBooks = filteredBooks.map(book => book.id)
                     books = books.filter((books) => ((idFilteredBooks.indexOf(books.id) === -1)?(books):(false)))
+                    books = books.map((book) => ({
+                        ...book,
+                        shelf: 'none'
+                    }))
                     books = mergeJSON.merge(filteredBooks, books)
                     books = books.filter((book) => match.test(book.title)).sort(sortBy('tittle'))
                     this.setState({books: books})

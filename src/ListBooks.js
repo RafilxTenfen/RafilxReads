@@ -18,7 +18,7 @@ const ListBooks  =  (props) => {
                                      }}>
                                     <div className="book-shelf-changer">
                                         <select id="shelf"
-                                                value={book.shelf}
+                                                value={book.shelf || 'none'}
                                                 onChange={(event) =>
                                                     onChangeShelf(book, (event.target.value !== "none") ? event.target.value : false)}>
                                             <option value="none" disabled>Move to</option>
