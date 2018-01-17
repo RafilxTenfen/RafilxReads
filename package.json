@@ -2,6 +2,7 @@
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
     "isarray": "^2.0.2",
+    "merge-json": "0.1.0-b.3",
     "prop-types": "^15.5.8",
     "react": "^15.6.2",
     "react-debounce-input": "^3.1.0",

@@ -22,23 +22,35 @@ class SearchBooks extends Component {
     }
 
     changeQuery = (query) => {
+        if(query === ''){
+            this.setState({books: this.props.books})
+        }
         this.setState({query : query})
+
     }
 
     updateQuery = (query) => {
         const match = new RegExp(escapeRegExp(query), 'i')
         if(query){
             this.setState({query : query})
-            BooksAPI.search(this.state.query).then((books) => {
+            BooksAPI.search(this.state.query, 8).then((books) => {
                 var isArray = require('isarray')
                 if(isArray(books)){
-                    books =  books.filter((book) => match.test(book.title)).sort(sortBy('tittle'))
+                    var mergeJSON = require("merge-json")
+                    let filteredBooks = this.props.books.filter((book) => match.test(book.title))
+                    let idFilteredBooks = filteredBooks.map(book => book.id)
+                    books = books.filter((books) => ((idFilteredBooks.indexOf(books.id) === -1)?(books):(false)))
+                    books = mergeJSON.merge(filteredBooks, books)
+                    books = books.filter((book) => match.test(book.title)).sort(sortBy('tittle'))
                     this.setState({books: books})
+                    console.log(books)
                 }
             })
         } else {
-            this.setState({books: this.props.books})
-            this.setState({query : ''})
+            this.setState({
+                books: this.props.books,
+                query: ''
+            })
         }
     }
 
