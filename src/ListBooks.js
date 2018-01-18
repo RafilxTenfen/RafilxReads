@@ -19,8 +19,7 @@ const ListBooks  =  (props) => {
                                     <div className="book-shelf-changer">
                                         <select id="shelf"
                                                 value={book.shelf || 'none'}
-                                                onChange={(event) =>
-                                                    onChangeShelf(book, (event.target.value !== "none") ? event.target.value : false)}>
+                                                onChange={(event) => onChangeShelf(book, event.target.value)}>
                                             <option value="none" disabled>Move to</option>
                                             <option value="currentlyReading">Currently Reading</option>
                                             <option value="wantToRead">Want to Read</option>
@@ -31,7 +30,10 @@ const ListBooks  =  (props) => {
                                 </div>
                             </div>
                             <div className="book-title">{book.title}</div>
-                            <div className="book-authors">{book.authors}</div>
+                            <div className="book-authors">{(book.authors)?
+                                (book.authors.toString())
+                                :(book.publishedDate)}
+                            </div>
                         </div>
                     </li>
                 ))}

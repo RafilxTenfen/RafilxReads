@@ -34,9 +34,9 @@ class SearchBooks extends Component {
         if(query){
             this.setState({query : query})
             BooksAPI.search(this.state.query, 8).then((books) => {
-                var isArray = require('isarray')
+                let isArray = require('isarray')
                 if(isArray(books)){
-                    var mergeJSON = require("merge-json")
+                    let mergeJSON = require("merge-json")
                     let filteredBooks = this.props.books.filter((book) => match.test(book.title))
                     let idFilteredBooks = filteredBooks.map(book => book.id)
                     books = books.filter((books) => ((idFilteredBooks.indexOf(books.id) === -1)?(books):(false)))
